@@ -10,9 +10,7 @@ from loguru import logger
 import requests
 
 
-router = APIRouter(prefix="/api/v1")
 app = FastAPI()
-app.include_router(router)
 configure_logger()
 
 
@@ -25,7 +23,7 @@ async def middleware(request, call_next):
         return response
 
 
-@router.get("/recommendations/", response_model=Articles)
+@app.get("/api/v1/recommendations/", response_model=Articles)
 async def get_recommendations(text: str):
     logger.info("Getting recommendations")
     try:
