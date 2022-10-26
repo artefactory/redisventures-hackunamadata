@@ -67,4 +67,19 @@ sequenceDiagram
 | /recommandation_service/v1/recommendations | POST | Get the recommendations for the given text and optional parameters | `{"text": "string", "categories": ["cond-mat.dis-nn"], "years": ["2007", "2010"], "number_of_results": 5}` | `{"papers": [{"id": "123", "title": "title", "abstract": "abstract"}]}` |
 
 ## Browser Extension
-TBC
+
+### Extension configuration
+| Field | Description | Example | Default |
+| --- | --- | --- | --- |
+| Trigger key events | List of key events that will trigger the recommendation service | `["space", "enter"]` | `["."]` |
+| Recommendation popup fade out delay | Delay in seconds before the recommendation popup fades out | `10` | `10` |
+| Recommendation service URL | URL of the recommendation service | `http://localhost:8080` | `http://localhost:8080` |
+
+### Extension behavior
+- When the user is writing, the extension will listen to the key events defined in the configuration
+- When the user types a trigger key event, the extension will send the last paragraph to the recommendation service
+- The recommendation service will return the recommendations
+- The extension will display the recommendations to the user
+- The recommendations will fade out after the delay defined in the configuration
+- The user can click on a recommendation to open the article in a new tab
+- The user can click on the extension icon to open the configuration page
