@@ -30,7 +30,38 @@ sequenceDiagram
 # Components specification
 ## Redis
 ### Data structure
-TBC
+/api/v1/arxiv/articles/:id
+```json
+{
+    "id": "arxiv:1801.00001",
+    "title": "Title of the article",
+    "abstract": "Abstract of the article",
+    "authors": [
+        "Author 1",
+        "Author 2",
+        "Author 3"
+    ],
+    "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.LG"
+    ],
+    "published": "2018-01-01T00:00:00Z",
+    "updated": "2018-01-01T00:00:00Z",
+    "vector": [
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+    ]
+}
+```
 
 ## Vector Service
 ### Endpoints
@@ -39,7 +70,6 @@ TBC
 | --- | --- | --- | --- | --- |
 | /api/v1/arxiv/articles | POST | Compute the vectors for the given list of arxiv articles json | `{"articles": [{"id": "123", "title": "title", "abstract": "abstract"}]}` | `{"status": "ok"}` |
 | /api/v1/arxiv/articles/:id | GET | Get the vector for the given arxiv article id | - | `{"vector": [0.1, 0.2, 0.3]}` |
-| /api/v1/text | POST | Compute the vector for the given text | `{"text": "text"}` | `{"status": "ok"}` |
 | /api/v1/text/:text | GET | Get the vector for the given text | - | `{"vector": [0.1, 0.2, 0.3]}` |
 | /api/v1/text/:text/nearest?k=10 | GET | Get the k nearest articles for the given text | - | `{"articles": [{"id": "123", "title": "title", "abstract": "abstract"}]}` |
 
