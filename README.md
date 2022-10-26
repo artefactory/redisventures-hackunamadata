@@ -28,6 +28,10 @@ sequenceDiagram
 ```
 
 # Components specification
+## Redis
+### Data structure
+TBC
+
 ## Vector Service
 ### Endpoints
 
@@ -45,3 +49,6 @@ sequenceDiagram
 | Endpoint | Method | Description | Request Body | Response Body |
 | --- | --- | --- | --- | --- |
 | /api/v1/recommendations/:text | GET | Get the recommendations for the given text | - | `{"articles": [{"id": "123", "title": "title", "abstract": "abstract"}]}` |
+
+## Browser Extension
+TBC
