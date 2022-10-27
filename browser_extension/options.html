@@ -1,0 +1,46 @@
+<!--
+  This html files renders the options page for the browser extension.
+  The options are : ["Text trigger depth", "Text send depth", "Recommendation popup fade", "Recommendation service URL"]
+  It uses bootstrap for the UI.
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Options</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="bootstrap.min.js"></script>
+</head>
+
+<body>
+  <!-- list of options iputs -->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Options</h3>
+        <div class="form-group">
+          <label for="text_trigger_depth">Text trigger depth</label>
+          <input type="number" class="form-control" id="text_trigger_depth" placeholder="Text trigger depth" value="10">
+        </div>
+        <div class="form-group">
+          <label for="text_send_depth">Text send depth</label>
+          <input type="number" class="form-control" id="text_send_depth" placeholder="Text send depth" value="100">
+        </div>
+        <div class="form-group">
+          <label for="recommendation_popup_fade">Recommendation popup fade</label>
+          <input type="number" class="form-control" id="recommendation_popup_fade"
+            placeholder="Recommendation popup fade" value="10">
+        </div>
+        <div class="form-group">
+          <label for="recommendation_service_url">Recommendation service URL</label>
+          <input type="text" class="form-control" id="recommendation_service_url"
+            placeholder="Recommendation service URL" value="http://localhost:8080">
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="options.js"></script>
+</body>
+
+</html>

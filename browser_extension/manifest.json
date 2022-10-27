@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+  
+    "name": "ArXiv",
+    "description": "suggests arXiv papers",
+    "version": "1.0",
+    
+    "options_page": "options.html",
+    "content_scripts": [{
+      "css": ["hook.css"],
+      "js": ["hook.js"],
+      "matches": ["https://docs.google.com/document/*"]
+    }],
+    "permissions": [
+      "storage"
+    ]
+}
