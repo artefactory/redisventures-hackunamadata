@@ -71,7 +71,8 @@ sequenceDiagram
 ### Extension configuration
 | Field | Description | Example | Default |
 | --- | --- | --- | --- |
-| Trigger key events | List of key events that will trigger the recommendation service | `["space", "enter"]` | `["."]` |
+| Text trigger depth | Number of words to consider before and after the trigger event | `10` | `10` |
+| Text send depth | Number of words to send to the recommendation service | `100` | `100` |
 | Recommendation popup fade out delay | Delay in seconds before the recommendation popup fades out | `10` | `10` |
 | Recommendation service URL | URL of the recommendation service | `http://localhost:8080` | `http://localhost:8080` |
 
