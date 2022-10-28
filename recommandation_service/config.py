@@ -4,7 +4,7 @@ import loguru
 
 
 NUMBER_NEAREST_ARTICLES = 5
-VECTOR_SERVICE_ENDPOINT = "localhost/api/v1/text/{{ text }}/nearest"
+VECTOR_SERVICE_ENDPOINT = "localhost/api/v1/text/{text}/nearest"
 
 
 def configure_logger():
