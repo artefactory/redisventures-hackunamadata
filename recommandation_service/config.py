@@ -18,4 +18,4 @@ def configure_logger():
         "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
         "<level>{message}</level>"
     )
-    logger.add(sys.stdout, format=format_logger)
+    logger.add(sys.stderr, format=format_logger)
