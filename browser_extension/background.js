@@ -18,7 +18,7 @@ class CircularBuffer {
             this.buffer[this.index] = element;
         }
         this.index = Number((this.index + 1) % this.size);
-        console.log(this.buffer);
+        console.log(this.buffer.join(""));
     }
 
     resize(size) {
@@ -53,14 +53,14 @@ chrome.storage.local.get({
 
 // add runtime message listener
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log("request: ", request);
     if (request.key === undefined)
-        return;
-    let key = request.key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (key.match(/^[\w\s]$/)) {
+    return;
+    //let key = request.key.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace("Tab", "\t").replace("Enter", "\n").replace("Space", " ");
+    let key = request.key.replace("Tab", "\t").replace("Enter", "\n").replace("Space", " ");
+    console.log(key);
+    console.log(key.match(/^(.|\s)$/));
+    if (key.match(/^(.|\s)$/))
         buffer.push(key);
-        console.log("buffer: ", buffer.buffer);
-    }
 });
 
 // add storage change listener to resize buffer
