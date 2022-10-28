@@ -18,9 +18,9 @@ configure_logger()
 async def middleware(request, call_next):
     path = request.scope['path']
     request_id = str(uuid.uuid4())
-    with logger.contextualize(request_id=request_id, path=path):
-        response = await call_next(request)
-        return response
+    logger.configure(extra={"path": path, "request_id": request_id})
+    response = await call_next(request)
+    return response
 
 
 @app.get("/api/v1/recommendations/", response_model=Articles)
