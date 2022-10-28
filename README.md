@@ -6,9 +6,18 @@ https:/hackathon.redisventures.com/
 sequenceDiagram
     title "High level flow - synchronous"
 
-    Team ->> Vector Service: Send all data in arXiv dataset
-    Vector Service ->> Vector Service: Compute all vectors
-    Vector Service ->> Redis: Cache all vectors
+    Team ->> Vector Service: Send all articles in arXiv dataset
+    Note over Team, Vector Service: POST api/v1/async/arxiv/articles/
+    Vector Service ->> Redis: Send articles by one in a queue
+
+    opt jupyter server and dask cluster are running:
+        Redis -->> Jupyter Server: Consume messages in queue
+        Note over Redis, Jupyter Server: user redis client to consume messages from queue
+        Jupyter Server ->> Dask Cluster: Compute embeding for message
+        Note over Jupyter Server, Dask Cluster: use dask client to push jobs to cluster
+        Dask Cluster -->> Jupyter Server: Get message's embedding
+        Jupyter Server ->> Redis: Store embeddings articles
+    end
 
     User ->> Browser Extension: Sets the recommendation trigger actions
 
@@ -68,10 +77,10 @@ sequenceDiagram
 
 | Endpoint | Method | Description | Request Body | Response Body |
 | --- | --- | --- | --- | --- |
-| /api/v1/arxiv/articles | POST | Compute the vectors for the given list of arxiv articles json | `{"articles": [{"id": "123", "title": "title", "abstract": "abstract"}]}` | `{"status": "ok"}` |
-| /api/v1/arxiv/articles/:id | GET | Get the vector for the given arxiv article id | - | `{"vector": [0.1, 0.2, 0.3]}` |
-| /api/v1/text/:text | GET | Get the vector for the given text | - | `{"vector": [0.1, 0.2, 0.3]}` |
-| /api/v1/text/:text/nearest?k=10 | GET | Get the k nearest articles for the given text | - | `{"articles": [{"id": "123", "title": "title", "abstract": "abstract"}]}` |
+| /api/v1/async/arxiv/articles | POST | Compute the vectors for the given list of arxiv articles json | `{"articles": [{"id": "123", "title": "title", "abstract": "abstract"}]}` | `{"status": "ok"}` |
+| /api/v1/sync/arxiv/articles/:id | GET | Get the vector for the given arxiv article id | - | `{"vector": [0.1, 0.2, 0.3]}` |
+| /api/v1/sync/text/:text | GET | Get the vector for the given text | - | `{"vector": [0.1, 0.2, 0.3]}` |
+| /api/v1/sync/text/:text/nearest?k=10 | GET | Get the k nearest articles for the given text | - | `{"articles": [{"id": "123", "title": "title", "abstract": "abstract"}]}` |
 
 
 ## Recommendation Service
