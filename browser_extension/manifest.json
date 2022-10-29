@@ -14,7 +14,8 @@
       "match_about_blank": true
     }],
     "permissions": [
-      "storage"
+      "storage",
+      "notifications"
     ],
     "background": {
       "service_worker": "background.js"
