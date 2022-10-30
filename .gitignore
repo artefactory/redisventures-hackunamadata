@@ -1,0 +1,5 @@
+.env
+.DS_Store
+__pycache__
+arxiv_embeddings_10000.pkl
+arxiv-metadata-oai-snapshot.json
