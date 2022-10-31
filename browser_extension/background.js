@@ -56,7 +56,6 @@ class CircularBuffer {
             this.buffer[this.index] = element;
         }
         this.index = Number((this.index + 1) % this.size);
-        console.log(this.to_string());
     }
 
     resize(size) {
@@ -81,64 +80,106 @@ class CircularBuffer {
     }
 }
 
-var buffer = {};
+let buffer = new CircularBuffer(1);
+
+chrome.storage.local.get({
+    text_send_depth: "100",
+}, (result) => {
+    buffer.resize(result.text_send_depth);
+});
+
+class RecommandationService {
+    constructor(text_buffer, text_trigger_depth, recommendation_service_url, recommendation_service_token) {
+        this.text_buffer = text_buffer;
+        this.nwords = 0;
+        this.last_input = " ";
+        this.text_trigger_depth = text_trigger_depth;
+        this.recommendation_service_url = recommendation_service_url;
+        this.recommendation_service_token = recommendation_service_token;
+    }
+
+    message_handler(request, sender, sendResponse) {
+        if (request.key === undefined) {
+            return;
+        }
+        let key = request.key.replace("Tab", "\t").replace("Enter", "\n").replace("Space", " ");
+        if (!key.match(/^(.|\s)$/)) {
+            return;
+        }
+        buffer.push(key);
+        let last_input = this.last_input;
+        this.last_input = key;
+        if (key.match(/^\s$/) && last_input.match(/^\s$/)) {
+            return;
+        }
+        this.nwords += 1;
+        if (this.nwords < this.text_trigger_depth) {
+            return;
+        }
+        this.nwords = 0;
+        fetch(
+            encodeURI(this.recommendation_service_url),
+            {
+                method: "POST",
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'token ' + this.recommendation_service_token
+                },
+                body: JSON.stringify({
+                    "text": buffer.to_string(),
+                    "categories": [],
+                    "years": [],
+                    "number_of_results": 5,
+                    "search_type": "KNN"
+                })
+            }
+        ).then((response) => {
+            // get papers from response
+            console.log(response);
+            return;
+            for (let article of sample_articles) {
+                let notificationId = article.paper_id;
+                let options = {
+                    type: "basic",
+                    title: "Article that could interest you",
+                    message: `${article.title}, written by ${article.authors}`,
+                    iconUrl: "favicon.ico",
+                    silent: true,
+                };
+    
+                // update the notification if it already exists, otherwise create it
+                chrome.notifications.update(notificationId, options, (wasUpdated) => {
+                    if (!wasUpdated) {
+                        chrome.notifications.create(notificationId, options, () => {
+                            console.log("Notification created for article " + article.title);
+                        });
+                    } else {
+                        console.log("Notification updated for article " + article.title);
+                    }
+                });
+            } 
+        });
+    }
+}
+
+let recommandation_service = new RecommandationService(buffer, 10, 100, undefined);
 
 chrome.storage.local.get({
     text_trigger_depth: "10",
-    text_send_depth: "100",
     recommendation_service_url: "http://localhost:8080 ",
+    recommendation_service_token: undefined,
 }, (result) => {
-    buffer = new CircularBuffer(result.text_send_depth);
+    recommandation_service.text_trigger_depth = result.text_trigger_depth;
+    recommandation_service.recommendation_service_url = result.recommendation_service_url;
+    recommandation_service.recommendation_service_token = result.recommendation_service_token;
 });
 
-
-// add runtime message listener
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.key === undefined)
-        return;
-    //let key = request.key.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace("Tab", "\t").replace("Enter", "\n").replace("Space", " ");
-    let key = request.key.replace("Tab", "\t").replace("Enter", "\n").replace("Space", " ");
-    if (key.match(/^(.|\s)$/))
-        buffer.push(key);
-    if (key == "\n") {
-        buffer.resize(buffer.size);
-        let url = encodeURI("https://postman-echo.com/get?" + buffer.to_string());
-        console.log(url);
-        fetch(
-            url,
-            {mode: 'no-cors'}
-        ).then((response) => {console.log(response);});
-
-        // send all articles as notification, recreate the notification if it already exists
-        for (let article of sample_articles) {
-            let notificationId = article.paper_id;
-            let options = {
-                type: "basic",
-                title: "Article that could interest you",
-                message: `${article.title}, written by ${article.authors}`,
-                iconUrl: "favicon.ico",
-                silent: true,
-            };
-
-            // update the notification if it already exists, otherwise create it
-            chrome.notifications.update(notificationId, options, (wasUpdated) => {
-                if (!wasUpdated) {
-                    chrome.notifications.create(notificationId, options, () => {
-                        console.log("Notification created for article " + article.title);
-                    });
-                } else {
-                    console.log("Notification updated for article " + article.title);
-                }
-            });
-        }
-    }    
-});
+chrome.runtime.onMessage.addListener(recommandation_service.message_handler.bind(recommandation_service));
 
 // add notification click listener to open the article in a new tab
 chrome.notifications.onClicked.addListener((notificationId) => {
-    chrome.notifications.clear(notificationId, () => {
-        console.log("Notification cleared for article " + notificationId);
-    });
+    chrome.notifications.clear(notificationId);
     chrome.tabs.create({url: "https://arxiv.org/abs/" + notificationId});
 });
 
@@ -146,8 +187,18 @@ chrome.notifications.onClicked.addListener((notificationId) => {
 // add storage change listener to resize buffer
 chrome.storage.onChanged.addListener((changes, namespace) => {
     for (key in changes) {
-        if (key === "text_send_depth") {
-            buffer.resize(changes[key].newValue);
+        switch (key) {
+            case "text_send_depth":
+                buffer.resize(changes[key].newValue);
+                break;
+            case "text_trigger_depth":
+                recommandation_service.text_trigger_depth = changes[key].newValue;
+                break;
+            case "recommendation_service_url":
+                recommandation_service.recommendation_service_url = changes[key].newValue;
+                break;
+            default:
+                break;
         }
     }
 });
