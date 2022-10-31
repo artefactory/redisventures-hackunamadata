@@ -2,25 +2,25 @@ import asyncio
 from loguru import logger
 import pandas as pd
 import redis.asyncio as redis
-from typing import Dict
+from typing import Dict, List
 
 from config.redis_config import ARXIV_PAPERS_PREFIX_KEY, QUEUE_NAME, REDIS_URL
 from lib.embeddings import Embeddings
 from papers_embeddor.load_embeddings import load_all_embeddings
 
 
-redis_client = redis.from_url(REDIS_URL, decode_responses=True )
+redis_client = redis.from_url(REDIS_URL, decode_responses=True)
 embeddings = Embeddings()
 
 
-async def get_papers_in_queue() -> dict:
+async def get_papers_in_queue() -> Dict:
     logger.info("Extracting the list of papers to process")
     papers_ids = await redis_client.lrange(QUEUE_NAME, 0, -1)
     logger.info(f"Found {len(papers_ids)} papers to process")
     return papers_ids
 
 
-async def get_arxiv_papers(papers_ids: list[str]) -> list[dict]:
+async def get_arxiv_papers(papers_ids: List[str]) -> List[Dict]:
     async def get_arxiv_paper(paper_id: str) -> dict:
         paper = await redis_client.hgetall(f"{ARXIV_PAPERS_PREFIX_KEY}/{paper_id}")
         return paper

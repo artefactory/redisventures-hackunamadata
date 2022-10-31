@@ -2,7 +2,7 @@ import asyncio
 from fastapi import APIRouter
 from loguru import logger
 import redis.asyncio as redis
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from api.schemas.similarity_search import UserTextSimilarityRequest
 from config.redis_config import INDEX_NAME, REDIS_URL, ARXIV_PAPERS_PREFIX_KEY

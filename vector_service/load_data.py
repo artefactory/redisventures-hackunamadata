@@ -41,7 +41,7 @@ def load_all_papers_in_redis(data_path: str):
         requests.post(
             "http://0.0.0.0:8000/vector_service/v1/arxiv/papers",
             json={
-                "papers" : papers[20:40]
+                "papers": papers[20:40]
             }
         )
     except Exception as e:

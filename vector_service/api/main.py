@@ -3,7 +3,6 @@ import uvicorn
 
 from api.routes import main_router
 from config import API_DOCS, API_V1_STR, OPENAPI_DOCS, PROJECT_NAME
-from config.redis_config import REDIS_URL
 
 
 app = FastAPI(

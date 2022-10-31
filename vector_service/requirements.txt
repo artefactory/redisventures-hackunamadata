@@ -5,3 +5,4 @@ pandas==1.5.1
 sentence-transformers==2.2.2
 loguru==0.6.0
 redis==4.3.4
+flake8==5.0.4
