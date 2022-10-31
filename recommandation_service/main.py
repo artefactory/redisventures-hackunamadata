@@ -4,7 +4,7 @@ import requests
 import uuid
 import uvicorn
 
-from config import configure_logger, VECTOR_SERVICE_ENDPOINT, VECTOR_SERVICE_HOST
+from config import configure_logger, VECTOR_SERVICE_ENDPOINT, VECTOR_SERVICE_HOST, SATURN_TOKEN
 from schemas import UserTextSimilarityRequest
 
 
@@ -27,7 +27,8 @@ async def get_recommendations(similarity_request: UserTextSimilarityRequest):
     try:
         response = requests.post(
             url=f"{VECTOR_SERVICE_HOST}/{VECTOR_SERVICE_ENDPOINT}",
-            json=dict(similarity_request)
+            json=dict(similarity_request),
+            headers={"Authorization": f"token {SATURN_TOKEN}"}
         )
         result = response.json()
         if response.status_code == status.HTTP_200_OK:

@@ -5,6 +5,7 @@ import sys
 
 VECTOR_SERVICE_HOST = os.environ.get("VECTOR_SERVICE_HOST", "http://0.0.0.0:8000")
 VECTOR_SERVICE_ENDPOINT = "vector_service/v1/text/nearest/"
+SATURN_TOKEN = os.environ.get("SATURN_TOKEN", "token")
 
 FORMAT_LOGGER = (
         "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
