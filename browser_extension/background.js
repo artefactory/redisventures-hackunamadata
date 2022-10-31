@@ -86,7 +86,6 @@ var buffer = {};
 chrome.storage.local.get({
     text_trigger_depth: "10",
     text_send_depth: "100",
-    recommendation_popup_fade: "10",
     recommendation_service_url: "http://localhost:8080 ",
 }, (result) => {
     buffer = new CircularBuffer(result.text_send_depth);
