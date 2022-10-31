@@ -6,4 +6,3 @@ class UserTextSimilarityRequest(BaseModel):
     categories: list = []
     years: list = []
     number_of_results: int = 5
-    search_type: str = "KNN"
