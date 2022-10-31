@@ -1,0 +1,54 @@
+{
+  "name": "recommandation_service",
+  "image": {
+    "name": "saturn-python",
+    "version": "2022.04.01",
+    "owner": "saturncloud"
+  },
+  "description": "Recommandation service API deployment",
+  "environment_variables": {},
+  "working_directory": "/home/jovyan/workspace/redisventures-hackunamadata/recommandation_service",
+  "extra_packages": {
+    "pip": {
+      "install": "-r requirements.txt"
+    }
+  },
+  "start_script": "export PYTHONPATH=.",
+  "git_repositories": [
+    {
+      "url": "git@github.com:artefactory/redisventures-hackunamadata.git",
+      "path": "/home/jovyan/workspace/redisventures-hackunamadata",
+      "public": false,
+      "on_restart": "reclone",
+      "reference": "feat/vector_service",
+      "reference_type": "branch"
+    }
+  ],
+  "secrets": [
+    {
+      "location": "VECTOR_SERVICE_HOST",
+      "type": "environment_variable",
+      "description": "Host of the vector service",
+      "owner": "vectorization",
+      "name": "VECTOR_SERVICE_HOST"
+    },
+    {
+      "location": "SATURN_TOKEN",
+      "type": "environment_variable",
+      "description": "Saturn token",
+      "owner": "vectorization",
+      "name": "SATURN_TOKEN"
+    }
+  ],
+  "deployment": {
+    "instance_type": "medium",
+    "command": "uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+    "instance_count": 1,
+    "public": false,
+    "start_ssh": false,
+    "subdomain": "recommandationservice"
+  },
+  "owner": "vectorization",
+  "visibility": "org",
+  "schema_version": "2022.08.01"
+}
