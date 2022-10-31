@@ -1,18 +1,8 @@
-from datetime import datetime
-from typing import List
-
 from pydantic import BaseModel
 
-
-class Article(BaseModel):
-    id: str
-    title: str
-    abstract: str
-    authors: List[str]
-    categories: List[str]
-    published: datetime
-    updated: datetime
-
-
-class Articles(BaseModel):
-    articles: List[Article]
+class UserTextSimilarityRequest(BaseModel):
+    text: str
+    categories: list
+    years: list
+    number_of_results: int = 5
+    search_type: str = "KNN"

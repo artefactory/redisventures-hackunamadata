@@ -1,10 +1,10 @@
+import loguru
+import os
 import sys
 
-import loguru
 
-
-NUMBER_NEAREST_ARTICLES = 5
-VECTOR_SERVICE_ENDPOINT = "localhost/api/v1/text/{text}/nearest"
+VECTOR_SERVICE_HOST = os.environ.get("VECTOR_SERVICE_HOST", "http://0.0.0.0:8000")
+VECTOR_SERVICE_ENDPOINT = "vector_service/v1/text/nearest/"
 
 FORMAT_LOGGER = (
         "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "

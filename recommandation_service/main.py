@@ -1,13 +1,12 @@
-import uuid
-
-from config import configure_logger, NUMBER_NEAREST_ARTICLES
-from helpers.input_helper import build_vector_service_url
-from schemas import Articles
-
-from fastapi import FastAPI, APIRouter, status
+from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
 from loguru import logger
 import requests
+import uuid
+import uvicorn
+
+from config import configure_logger, VECTOR_SERVICE_ENDPOINT, VECTOR_SERVICE_HOST
+from schemas import UserTextSimilarityRequest
 
 
 app = FastAPI()
@@ -23,15 +22,17 @@ async def middleware(request, call_next):
     return response
 
 
-@app.get("/api/v1/recommendations/", response_model=Articles)
-async def get_recommendations(text: str):
+@app.post("/api/v1/recommendations/")
+async def get_recommendations(similarity_request: UserTextSimilarityRequest):
     logger.info("Getting recommendations")
     try:
-        response = requests.get(url=build_vector_service_url(text), params={"k": NUMBER_NEAREST_ARTICLES})
+        response = requests.post(
+            url=f"{VECTOR_SERVICE_HOST}/{VECTOR_SERVICE_ENDPOINT}",
+            json=dict(similarity_request)
+        )
         result = response.json()
         if response.status_code == status.HTTP_200_OK:
-            articles = Articles(**result)
-            return JSONResponse(articles)
+            return {"papers": result["papers"]}
 
         logger.error({"result": result, "status_code": response.status_code})
         return {
@@ -41,3 +42,14 @@ async def get_recommendations(text: str):
     except Exception as e:
         logger.error(e)
         raise
+
+
+if __name__ == "__main__":
+
+    server_attr = {
+        "host": "0.0.0.0",
+        "reload": True,
+        "port": 8080,
+        "workers": 1
+    }
+    uvicorn.run("main:app", **server_attr)
