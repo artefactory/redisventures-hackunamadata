@@ -84,3 +84,4 @@ sequenceDiagram
 | text_trigger_depth | Number of words to wait before asking for recommandations again | `10` | `10` |
 | text_send_depth | Number of words to send to the recommendation service | `100` | `100` |
 | recommendation_service_url | URL of the recommendation service | `http://localhost:8080` | `http://localhost:8080` |
+| recommendation_service_token | Token for the recommendation service | `678GSA576SQ` | `undefined` |
