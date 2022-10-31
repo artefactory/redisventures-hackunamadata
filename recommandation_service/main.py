@@ -21,7 +21,7 @@ async def middleware(request, call_next):
     return response
 
 
-@app.post("/api/v1/recommendations/")
+@app.post("/recommandation_service/v1/recommendations/")
 async def get_recommendations(similarity_request: UserTextSimilarityRequest):
     logger.info("Getting recommendations")
     try:

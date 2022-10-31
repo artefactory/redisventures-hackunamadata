@@ -2,12 +2,12 @@ from pydantic import BaseModel
 
 
 class Paper(BaseModel):
-    paper_id: str
+    id: str
     title: str
     authors: str
     abstract: str
     categories: str
-    year: str
+    journal_ref: str
 
 
 class PapersList(BaseModel):

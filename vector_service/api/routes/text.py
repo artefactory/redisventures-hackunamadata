@@ -5,7 +5,7 @@ import redis.asyncio as redis
 from typing import Any, Dict
 
 from api.schemas.similarity_search import UserTextSimilarityRequest
-from config.redis_config import INDEX_NAME, REDIS_URL, ARXIV_PAPERS_PREFIX_KEY
+from config.redis_config import INDEX_NAME, REDIS_URL
 from lib.embeddings import Embeddings
 from lib.search_index import SearchIndex
 from api.schemas.papers import Paper
@@ -17,9 +17,9 @@ search_index = SearchIndex()
 
 
 async def process_paper(p, i: int) -> Dict[str, Any]:
-    fields = [field for field in Paper.__fields__.keys() if field != "vector"]
+    fields = [field for field in Paper.__fields__.keys()]
     values = await redis_client.hmget(
-        f"{ARXIV_PAPERS_PREFIX_KEY}/{p.paper_id}",
+        p.id,
         fields
     )
     paper = dict(zip(fields, values))
@@ -38,7 +38,7 @@ async def papers_from_results(total, results) -> Dict[str, Any]:
     }
 
 
-@router.post("/nearest/", response_model=Dict)
+@router.post("/text/nearest/", response_model=Dict)
 async def find_papers_by_user_text(similarity_request: UserTextSimilarityRequest):
     logger.info("Getting the nearest articles for given text and parameters")
     try:

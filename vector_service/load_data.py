@@ -1,24 +1,18 @@
 import json
 from loguru import logger
-import re
 import requests
-
-from config import YEAR_PATTERN
 
 
 def process(paper: dict) -> dict:
     paper = json.loads(paper)
-    if paper['journal-ref']:
-        years = [int(year) for year in re.findall(YEAR_PATTERN, paper['journal-ref'])]
-        year = min(years) if years else None
-    else:
-        year = None
+    if not paper['journal-ref']:
+        paper['journal-ref'] = ""
     return {
-        'paper_id': paper['id'],
+        'id': paper['id'],
         'title': paper['title'],
-        'year': year,
+        'journal_ref': paper['journal-ref'],
         'authors': paper['authors'],
-        'categories': '|'.join(paper['categories'].split(' ')),
+        'categories': paper['categories'],
         'abstract': paper['abstract']
     }
 
@@ -27,10 +21,10 @@ def process_all_papers(data_path: str):
     processed_papers = []
     logger.info("Pre-processing all the papers")
     with open(data_path, 'r') as f:
-        for paper in f:
+        first_papers = f.readlines()[0:1000]
+        for paper in first_papers:
             paper = process(paper)
-            if paper['year']:
-                processed_papers.append(paper)
+            processed_papers.append(paper)
     return processed_papers
 
 
@@ -41,7 +35,7 @@ def load_all_papers_in_redis(data_path: str):
         requests.post(
             "http://0.0.0.0:8000/vector_service/v1/arxiv/papers",
             json={
-                "papers": papers[20:40]
+                "papers": papers
             }
         )
     except Exception as e:

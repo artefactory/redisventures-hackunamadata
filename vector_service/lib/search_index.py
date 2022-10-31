@@ -130,9 +130,9 @@ class SearchIndex:
         if categories:
             categories = "|".join([self.escaper.escape(cat) for cat in categories])
             if tag:
-                tag += f" (@categories:{{{categories}}})"
+                tag += f" (@categories_processed:{{{categories}}})"
             else:
-                tag += f"(@categories:{{{categories}}})"
+                tag += f"(@categories_processed:{{{categories}}})"
         tag += ")"
         # if no tags are selected
         if len(tag) < 3:
@@ -161,7 +161,7 @@ class SearchIndex:
         return Query(base_query)\
             .sort_by("vector_score")\
             .paging(0, number_of_results)\
-            .return_fields("paper_id", "vector_score")\
+            .return_fields("id", "vector_score")\
             .dialect(2)
 
     def count_query(

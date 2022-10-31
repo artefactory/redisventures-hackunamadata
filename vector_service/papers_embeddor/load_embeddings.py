@@ -3,10 +3,25 @@ from loguru import logger
 import numpy as np
 import pandas as pd
 import redis.asyncio as redis
+import re
 from redis.commands.search.field import TagField
 
 from config.redis_config import ARXIV_PAPERS_PREFIX_KEY, REDIS_URL, INDEX_TYPE
+from config import YEAR_PATTERN
 from lib.search_index import SearchIndex
+
+
+def extract_year(journal_ref: str) -> str:
+    if journal_ref:
+        years = [int(year) for year in re.findall(YEAR_PATTERN, journal_ref)]
+        year = min(years) if years else ""
+    else:
+        year = ""
+    return year
+
+
+def process_categories(categories: str) -> str:
+    return '|'.join(categories.split(' '))
 
 
 async def gather_with_concurrency(n, redis_conn, *papers):
@@ -15,10 +30,14 @@ async def gather_with_concurrency(n, redis_conn, *papers):
     async def load_paper(paper):
         async with semaphore:
             vector = paper['vector']
+            year = extract_year(paper["journal_ref"])
+            categories_processed = process_categories(paper["categories"])
             await redis_conn.hset(
-                f"{ARXIV_PAPERS_PREFIX_KEY}/{paper['paper_id']}",
+                f"{ARXIV_PAPERS_PREFIX_KEY}/{paper['id']}",
                 mapping={
                     "vector": np.array(vector, dtype=np.float32).tobytes(),
+                    "year": year,
+                    "categories_processed": categories_processed
                 }
             )
 
@@ -34,7 +53,7 @@ async def load_all_embeddings(papers: pd.DataFrame):
     logger.info("Papers loaded!")
 
     logger.info("Creating vector search index")
-    categories_field = TagField("categories", separator="|")
+    categories_field = TagField("categories_processed", separator="|")
     year_field = TagField("year", separator="|")
     try:
         if INDEX_TYPE == "HNSW":

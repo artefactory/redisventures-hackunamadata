@@ -15,18 +15,18 @@ redis_client = redis.from_url(REDIS_URL)
 embeddings = Embeddings()
 
 
-@router.post("")
+@router.post("/arxiv/papers")
 async def load_papers(papers_list: PapersList):
     logger.info("Loading all papers in redis")
 
     async def load_paper(paper: Paper):
         await redis_client.hset(
-            f"{ARXIV_PAPERS_PREFIX_KEY}/{paper.paper_id}",
+            f"{ARXIV_PAPERS_PREFIX_KEY}/{paper.id}",
             mapping=dict(paper)
         )
         await redis_client.lpush(
             QUEUE_NAME,
-            paper.paper_id
+            paper.id
         )
     try:
         await asyncio.gather(*[load_paper(paper) for paper in papers_list.papers])
@@ -36,13 +36,13 @@ async def load_papers(papers_list: PapersList):
         raise
 
 
-@router.get("/{paper_id}")
-async def get_arxiv_paper(paper_id: str) -> Dict:
-    logger.info(f"Retrieving Arxiv paper with id {paper_id}")
-    fields = [field for field in Paper.__fields__.keys() if field != "vector"]
+@router.get("/arxiv/papers/{id}")
+async def get_arxiv_paper(id: str) -> Dict:
+    logger.info(f"Retrieving Arxiv paper with id {id}")
+    fields = [field for field in Paper.__fields__.keys()]
     try:
         values = await redis_client.hmget(
-            f"{ARXIV_PAPERS_PREFIX_KEY}/{paper_id}",
+            f"{ARXIV_PAPERS_PREFIX_KEY}/{id}",
             fields
         )
         result = {
