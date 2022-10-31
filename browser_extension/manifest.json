@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
   
-    "name": "ArXiv",
+    "name": "ArXiv Copilot",
     "description": "suggests arXiv papers",
     "version": "1.0",
     
