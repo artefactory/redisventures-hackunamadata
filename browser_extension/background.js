@@ -103,13 +103,13 @@ class RecommandationService {
             return;
         }
         let key = request.key.replace("Tab", "\t").replace("Enter", "\n").replace("Space", " ");
-        if (!key.match(/^(.|\s)$/)) {
+        if (key.match(/^.$/) === null && key.match(/^[ \t\n]$/) === null) {
             return;
         }
         buffer.push(key);
         let last_input = this.last_input;
         this.last_input = key;
-        if (key.match(/^\s$/) && last_input.match(/^\s$/)) {
+        if (key.match(/^[ \n\t]$/) === null || last_input.match(/^[ \n\t]$/) !== null) {
             return;
         }
         this.nwords += 1;
@@ -137,7 +137,7 @@ class RecommandationService {
         ).then((response) => {
             // get papers from response
             console.log(response);
-            return;
+
             for (let article of sample_articles) {
                 let notificationId = article.paper_id;
                 let options = {
