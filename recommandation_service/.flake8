@@ -1,4 +1,4 @@
 [flake8]
 max-line-length=150
-ignore=E501,E121,E126,W503,W504
+ignore=E501,E121,E126,W503,W504,W605
 exclude = env,.env
