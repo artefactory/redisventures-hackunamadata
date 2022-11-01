@@ -1,6 +1,10 @@
 import json
-from loguru import logger
+import os
 import requests
+
+
+VECTOR_SERVICE_URL = os.environ.get('VECTOR_SERVICE_SATURN_URL', 'http://0.0.0.0:8000')
+TOKEN = os.environ.get("SATURN_TOKEN", "token")
 
 
 def process(paper: dict) -> dict:
@@ -19,9 +23,9 @@ def process(paper: dict) -> dict:
 
 def process_all_papers(data_path: str):
     processed_papers = []
-    logger.info("Pre-processing all the papers")
+    print("Pre-processing all the papers")
     with open(data_path, 'r') as f:
-        first_papers = f.readlines()[0:1000]
+        first_papers = f.readlines()[:10000]
         for paper in first_papers:
             paper = process(paper)
             processed_papers.append(paper)
@@ -31,18 +35,17 @@ def process_all_papers(data_path: str):
 def load_all_papers_in_redis(data_path: str):
     papers = process_all_papers(data_path)
     try:
-        logger.info("Loading data into Redis")
+        print("Sending data to Vector Service")
         requests.post(
-            "http://0.0.0.0:8000/vector_service/v1/arxiv/papers",
-            json={
-                "papers": papers
-            }
+            f"{VECTOR_SERVICE_URL}/api/v1/arxiv/papers",
+            json={"papers": papers},
+            headers={"Authorization": f"token {TOKEN}"}
         )
     except Exception as e:
-        logger.error(e)
+        print(e)
         raise
 
 
 if __name__ == "__main__":
-    data_path = "data/arxiv-metadata-oai-snapshot.json"
+    data_path = "../data/arxiv-metadata-oai-snapshot.json"
     load_all_papers_in_redis(data_path)
