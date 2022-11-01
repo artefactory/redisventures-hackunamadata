@@ -3,3 +3,4 @@
 __pycache__
 arxiv_embeddings_10000.pkl
 arxiv-metadata-oai-snapshot.json
+.ipynb_checkpoints/
