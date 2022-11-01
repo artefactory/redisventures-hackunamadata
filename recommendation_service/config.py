@@ -17,9 +17,9 @@ FORMAT_LOGGER = (
     )
 
 PROJECT_NAME = "recommendation_service"
-API_DOCS = f"/docs"
-OPENAPI_DOCS = f"/openapi.json"
-API_V1_STR = f"/api/v1"
+API_DOCS = "/docs"
+OPENAPI_DOCS = "/openapi.json"
+API_V1_STR = "/api/v1"
 
 
 def configure_logger():

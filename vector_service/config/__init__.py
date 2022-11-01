@@ -1,5 +1,5 @@
 YEAR_PATTERN = r"(19|20[0-9]{2})"
 PROJECT_NAME = "vector_service"
-API_DOCS = f"/docs"
-OPENAPI_DOCS = f"/openapi.json"
-API_V1_STR = f"/api/v1"
+API_DOCS = "/docs"
+OPENAPI_DOCS = "/openapi.json"
+API_V1_STR = "/api/v1"
