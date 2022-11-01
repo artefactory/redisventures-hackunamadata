@@ -169,7 +169,7 @@ let recommandation_service = new RecommandationService(buffer, 10, "3000", undef
 
 chrome.storage.local.get({
     text_trigger_depth: "10",
-    recommendation_service_url: "http://localhost:8080",
+    recommendation_service_url: "https://recommendationservice.community.saturnenterprise.io/api/v1/recommendations",
     recommendation_service_token: "token",
 }, (result) => {
     console.log(result);
