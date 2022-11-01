@@ -83,7 +83,7 @@ class CircularBuffer {
 let buffer = new CircularBuffer(1);
 
 chrome.storage.local.get({
-    text_send_depth: "100",
+    text_send_depth: "3000",
 }, (result) => {
     buffer.resize(result.text_send_depth);
 });
@@ -165,7 +165,7 @@ class RecommandationService {
     }
 }
 
-let recommandation_service = new RecommandationService(buffer, 10, 100, undefined);
+let recommandation_service = new RecommandationService(buffer, 10, "3000", undefined);
 
 chrome.storage.local.get({
     text_trigger_depth: "10",
