@@ -1,4 +1,5 @@
 from fastapi import FastAPI, status
+from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 import requests
 import uuid
@@ -19,6 +20,14 @@ async def middleware(request, call_next):
     logger.configure(extra={"path": path, "request_id": request_id})
     response = await call_next(request)
     return response
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex="chrome-extension:\/\/.*",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/recommandation_service/v1/recommendations/")
