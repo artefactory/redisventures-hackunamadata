@@ -4,7 +4,7 @@ import sys
 
 
 VECTOR_SERVICE_HOST = os.environ.get("VECTOR_SERVICE_HOST", "http://0.0.0.0:8000")
-VECTOR_SERVICE_ENDPOINT = "vector_service/v1/text/nearest/"
+VECTOR_SERVICE_ENDPOINT = "api/v1/text/nearest/"
 SATURN_TOKEN = os.environ.get("SATURN_TOKEN", "token")
 
 FORMAT_LOGGER = (
@@ -15,6 +15,11 @@ FORMAT_LOGGER = (
         "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
         "<level>{message}</level>"
     )
+
+PROJECT_NAME = "recommendation_service"
+API_DOCS = f"/docs"
+OPENAPI_DOCS = f"/openapi.json"
+API_V1_STR = f"/api/v1"
 
 
 def configure_logger():

@@ -1,13 +1,13 @@
 {
-  "name": "recommandation_service",
+  "name": "recommendation_service",
   "image": {
     "name": "saturn-python",
     "version": "2022.04.01",
     "owner": "saturncloud"
   },
-  "description": "Recommandation service API deployment",
+  "description": "Recommendation service API deployment",
   "environment_variables": {},
-  "working_directory": "/home/jovyan/workspace/redisventures-hackunamadata/recommandation_service",
+  "working_directory": "/home/jovyan/workspace/redisventures-hackunamadata/recommendation_service",
   "extra_packages": {
     "pip": {
       "install": "-r requirements.txt"
@@ -46,7 +46,7 @@
     "instance_count": 1,
     "public": false,
     "start_ssh": false,
-    "subdomain": "recommandationservice"
+    "subdomain": "recommendationservice"
   },
   "owner": "vectorization",
   "visibility": "org",

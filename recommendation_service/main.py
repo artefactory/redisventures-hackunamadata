@@ -5,11 +5,24 @@ import requests
 import uuid
 import uvicorn
 
-from config import configure_logger, VECTOR_SERVICE_ENDPOINT, VECTOR_SERVICE_HOST, SATURN_TOKEN
+from config import (
+    configure_logger,
+    API_DOCS,
+    API_V1_STR,
+    OPENAPI_DOCS,
+    PROJECT_NAME,
+    VECTOR_SERVICE_ENDPOINT,
+    VECTOR_SERVICE_HOST,
+    SATURN_TOKEN
+)
 from schemas import UserTextSimilarityRequest
 
 
-app = FastAPI()
+app = FastAPI(
+    title=PROJECT_NAME,
+    docs_url=API_DOCS,
+    openapi_url=OPENAPI_DOCS
+)
 configure_logger()
 
 
@@ -30,7 +43,7 @@ app.add_middleware(
 )
 
 
-@app.post("/recommandation_service/v1/recommendations/")
+@app.post(f"{API_V1_STR}/recommendations/")
 async def get_recommendations(similarity_request: UserTextSimilarityRequest):
     logger.info("Getting recommendations")
     try:
