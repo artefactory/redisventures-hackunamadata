@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from loguru import logger
+import uuid
 import uvicorn
 
 from api.routes import main_router
@@ -15,6 +17,15 @@ app.include_router(
     main_router,
     prefix=API_V1_STR
 )
+
+
+@app.middleware("http")
+async def middleware(request, call_next):
+    path = request.scope['path']
+    request_id = str(uuid.uuid4())
+    logger.configure(extra={"path": path, "request_id": request_id})
+    response = await call_next(request)
+    return response
 
 
 if __name__ == "__main__":
