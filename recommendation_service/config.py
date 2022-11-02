@@ -6,6 +6,7 @@ import sys
 VECTOR_SERVICE_HOST = os.environ.get("VECTOR_SERVICE_HOST", "http://0.0.0.0:8000")
 VECTOR_SERVICE_ENDPOINT = "api/v1/text/nearest/"
 SATURN_TOKEN = os.environ.get("SATURN_TOKEN", "token")
+SIMILARITY_SCORE_LIMIT = 0.3
 
 FORMAT_LOGGER = (
         "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "

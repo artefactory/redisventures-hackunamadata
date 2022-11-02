@@ -15,13 +15,20 @@ from config import (
     VECTOR_SERVICE_HOST,
     SATURN_TOKEN
 )
-from schemas import UserTextSimilarityRequest
+from schemas import Papers, UserTextSimilarityRequest
 
 
 app = FastAPI(
     title=PROJECT_NAME,
     docs_url=API_DOCS,
     openapi_url=OPENAPI_DOCS
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex="chrome-extension:\/\/.*",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 configure_logger()
 
@@ -34,17 +41,9 @@ async def middleware(request, call_next):
     response = await call_next(request)
     return response
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origin_regex="chrome-extension:\/\/.*",
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-
-@app.post(f"{API_V1_STR}/recommendations/")
-async def get_recommendations(similarity_request: UserTextSimilarityRequest):
+@app.post(f"{API_V1_STR}/recommendations/", response_model=Papers)
+def get_recommendations(similarity_request: UserTextSimilarityRequest):
     logger.info("Getting recommendations")
     try:
         response = requests.post(
@@ -54,7 +53,7 @@ async def get_recommendations(similarity_request: UserTextSimilarityRequest):
         )
         result = response.json()
         if response.status_code == status.HTTP_200_OK:
-            return {"papers": result["papers"]}
+            return Papers(**result["papers"])
 
         logger.error({"result": result, "status_code": response.status_code})
         return {
