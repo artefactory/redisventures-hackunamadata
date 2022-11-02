@@ -1,0 +1,97 @@
+{
+  "name": "papers_embeddor",
+  "image": {
+    "name": "saturn-python-rapids",
+    "version": "2022.06.01",
+    "owner": "saturncloud"
+  },
+  "description": "Papers embeddor service",
+  "environment_variables": {
+    "SATURN__JUPYTER_SETUP_DASK_WORKSPACE": "true"
+  },
+  "working_directory": "/home/jovyan/workspace/redisventures-hackunamadata/vector_service",
+  "extra_packages": {
+    "pip": {
+      "install": "redis\npandas\nnumpy\ntorch\ntorchvision\nsentence-transformers\ntransformers\nkaggle\nbokeh>=0.13.0"
+    }
+  },
+  "start_script": "export PYTHONPATH=.",
+  "git_repositories": [
+    {
+      "url": "git@github.com:artefactory/redisventures-hackunamadata.git",
+      "path": "/home/jovyan/workspace/redisventures-hackunamadata",
+      "public": false,
+      "on_restart": "reclone",
+      "reference": "feat/papers_embeddor",
+      "reference_type": "branch"
+    }
+  ],
+  "secrets": [
+    {
+      "location": "REDIS_PASSWORD",
+      "type": "environment_variable",
+      "description": "Redis password",
+      "owner": "vectorization",
+      "name": "REDIS_PASSWORD"
+    },
+    {
+      "location": "REDIS_PORT",
+      "type": "environment_variable",
+      "description": "Redis port",
+      "owner": "vectorization",
+      "name": "REDIS_PORT"
+    },
+    {
+      "location": "REDIS_HOST",
+      "type": "environment_variable",
+      "description": "Redis host",
+      "owner": "vectorization",
+      "name": "REDIS_HOST"
+    },
+    {
+      "location": "REDIS_DB",
+      "type": "environment_variable",
+      "description": "Redis db",
+      "owner": "vectorization",
+      "name": "REDIS_DB"
+    },
+    {
+      "location": "SATURN_BASE_URL",
+      "type": "environment_variable",
+      "description": "Saturn base url",
+      "owner": "vectorization",
+      "name": "SATURN_BASE_URL"
+    },
+    {
+      "location": "SATURN_TOKEN",
+      "type": "environment_variable",
+      "description": "Saturn token for dask cluster",
+      "owner": "vectorization",
+      "name": "DASK_SATURN_TOKEN"
+    }
+  ],
+  "jupyter_server": {
+    "instance_type": "g4dn8xlarge",
+    "disk_space": "40Gi",
+    "auto_shutoff": "1 hour",
+    "start_ssh": false,
+    "use_spot_instance": false,
+    "start_dind": false,
+    "self_destruct": false
+  },
+  "dask_cluster": {
+    "num_workers": 2,
+    "scheduler": {
+      "instance_type": "g4dn8xlarge"
+    },
+    "worker": {
+      "instance_type": "g4dn8xlarge",
+      "num_processes": 1,
+      "num_threads": 2,
+      "use_spot_instances": false
+    }
+  },
+  "owner": "vectorization",
+  "visibility": "owner",
+  "schema_version": "2022.08.01"
+}
