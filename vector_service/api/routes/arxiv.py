@@ -20,7 +20,7 @@ async def load_papers(papers_list: PapersList):
     logger.info("Loading all papers in redis")
     pipe = await redis_client.pipeline()
 
-    for paper in papers_list:
+    for paper in papers_list.papers:
         await pipe.hset(
             f"{ARXIV_PAPERS_PREFIX_KEY}/{paper.id}",
             mapping=dict(paper)
