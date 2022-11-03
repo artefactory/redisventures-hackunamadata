@@ -37,11 +37,6 @@
               <input type="text" class="form-control" id="recommendation_service_url"
                 placeholder="Recommendation service URL" value="https://recommendationservice.community.saturnenterprise.io/api/v1/recommendations/">
             </div>
-            <div class="form-group">
-              <label for="recommendation_service_token">Recommendation service Token</label>
-              <input type="text" class="form-control" id="recommendation_service_token"
-                placeholder="Recommendation service token">
-            </div>
           </div>
         </div>
         <!-- Advanced options panel -->
@@ -52,11 +47,16 @@
           <div class="panel-body">
             <div class="form-group">
               <label for="years">Years</label>
-              <input type="text" class="form-control" id="years" placeholder="Years. eg: 2017, 2018">
+              <input type="text" class="form-control" id="years" placeholder="List of years to include. eg: 2017, 2018">
             </div>
             <div class="form-group">
               <label for="categories">Categories</label>
-              <input type="text" class="form-control" id="categories" placeholder="Categories. eg: cond-mat.dis-nn, cs.AI">
+              <input type="text" class="form-control" id="categories" placeholder="List of categories to include. eg: cond-mat.dis-nn, cs.AI">
+            </div>
+            <div class="form-group">
+              <label for="recommendation_service_token">Authorization token (Optional)</label>
+              <input type="text" class="form-control" id="recommendation_service_token"
+                placeholder="(Optional) Authorization token for private endpoints">
             </div>
           </div>
       </div>
