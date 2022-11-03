@@ -6,32 +6,42 @@ https:/hackathon.redisventures.com/
 sequenceDiagram
     title "High level flow - synchronous"
 
-    Team ->> Vector Service: Send all papers in arXiv dataset
-    Note over Team, Vector Service: POST vector_service/v1/arxiv/papers/
-    Vector Service ->> Redis: Send papers in a queue and add papers as hashes with prefix /arxiv/papers/
+        opt team wants to upload articles
+        Team ->> Vector Service: Send all papers in arXiv dataset
+        Note over Team, Vector Service: POST vector_service/v1/arxiv/papers/
+        Vector Service ->> Redis: Send papers in a queue and add papers as hashes with prefix /arxiv/papers/
 
-    opt jupyter server and dask cluster are running:
-        Redis -->> Jupyter Server: Consume messages in queue
-        Note over Redis, Jupyter Server: user redis client to consume messages from queue
-        Jupyter Server ->> Dask Cluster: Compute embeding for message
-        Note over Jupyter Server, Dask Cluster: use dask client to push jobs to cluster
-        Dask Cluster -->> Jupyter Server: Get message's embedding
-        Jupyter Server ->> Redis: Store embeddings in papers hashes
+        opt jupyter server and dask cluster are running:
+            Redis -->> Jupyter Server: Consume messages in queue
+            Note over Redis, Jupyter Server: user redis client to consume messages from queue
+            Jupyter Server ->> Dask Cluster: Compute embeding for message
+            Note over Jupyter Server, Dask Cluster: use dask client to push jobs to cluster
+            Dask Cluster -->> Jupyter Server: Get message's embedding
+            Jupyter Server ->> Redis: Store embeddings in papers hashes
+        end
     end
 
-    User ->> Browser Extension: Sets the recommendation trigger actions
+    opt User wants custom exention setting
+        User ->> ArXiv Copilot: Setup the exention's options
+    end
 
     loop while user is writing
-        User ->> Browser Extension: Write text casually
-        opt user's text is a trigger action
-            Browser Extension ->> Recommendation Service: Send last paraghraph
+        User ->> ArXiv Copilot: Write text casually
+        opt ArXiv Copilot has registered `text_trigger_depth` words
+            ArXiv Copilot ->> Recommendation Service: Send `text_send_depth` words.
+            activate Recommendation Service
+            Note over ArXiv Copilot, Recommendation Service: GET /api/v1/text/:text/nearest?k=10
             Recommendation Service ->> Vector Service: Send text
             Vector Service ->> Vector Service : Compute vector for given text input
             Vector Service ->> Redis : Find nearest papers in index
-            Redis ->> Vector Service: Return nearest papers
+            Redis -->> Vector Service: Return nearest papers
             Vector Service -->> Recommendation Service: return nearest papers
-            Recommendation Service -->> Browser Extension: Return recommendations
-            Browser Extension -->> User: Display recommendations
+            Recommendation Service -->> ArXiv Copilot: Return recommendations
+            deactivate Recommendation Service
+            ArXiv Copilot -->> User: Return recommendations as chrome notifications
+            opt user clicks on notificaiton
+                ArXiv Copilot ->> User: Open article in new tab
+            end
         end
     end
 ```
@@ -66,5 +76,12 @@ sequenceDiagram
 | --- | --- | --- | --- | --- |
 | /recommandation_service/v1/recommendations | POST | Get the recommendations for the given text and optional parameters | `{"text": "string", "categories": ["cond-mat.dis-nn"], "years": ["2007", "2010"], "number_of_results": 5}` | `{"papers": [{"id": "123", "title": "title", "abstract": "abstract"}]}` |
 
-## Browser Extension
-TBC
+## ArXiv Copilot
+
+### Extension configuration
+| Field | Description | Example | Default |
+| --- | --- | --- | --- |
+| text_trigger_depth | Number of words to wait before asking for recommandations again | `10` | `10` |
+| text_send_depth | Number of words to send to the recommendation service | `3000` | `3000` |
+| recommendation_service_url | URL of the recommendation service | `https://recommendationservice.community.saturnenterprise.io/api/v1/recommendations/` | `https://recommendationservice.community.saturnenterprise.io/api/v1/recommendations/` |
+| recommendation_service_token | Token for the recommendation service | `678GSA576SQ` | `undefined` |

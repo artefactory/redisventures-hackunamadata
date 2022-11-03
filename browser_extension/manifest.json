@@ -1,0 +1,30 @@
+{
+    "manifest_version": 3,
+  
+    "name": "ArXiv Copilot",
+    "description": "suggests arXiv papers",
+    "version": "1.0",
+    "icons": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    
+    "options_page": "options.html",
+    "content_scripts": [{
+      "css": ["hook.css"],
+      "js": ["hook.js"],
+      "matches": ["https://docs.google.com/document/*"],
+      "all_frames": true,
+      "match_about_blank": true
+    }],
+    "permissions": [
+      "storage",
+      "notifications"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "host_permissions": ["https://recommendationservice.community.saturnenterprise.io/*"]
+}
