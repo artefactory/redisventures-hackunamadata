@@ -20,7 +20,7 @@
       "path": "/home/jovyan/workspace/redisventures-hackunamadata",
       "public": false,
       "on_restart": "reclone",
-      "reference": "feat/vector_service",
+      "reference": "main",
       "reference_type": "branch"
     }
   ],
