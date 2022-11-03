@@ -72,9 +72,9 @@ sequenceDiagram
 
 ## Recommendation Service
 ### Endpoints
-| Endpoint | Method | Description | Request Body | Response Body |
-| --- | --- | --- | --- | --- |
-| /recommandation_service/v1/recommendations | POST | Get the recommendations for the given text and optional parameters | `{"text": "string", "categories": ["cond-mat.dis-nn"], "years": ["2007", "2010"], "number_of_results": 5}` | `{"papers": [{"id": "123", "title": "title", "abstract": "abstract"}]}` |
+| Endpoint                | Method | Description | Request Body | Response Body                                                                                                                                                                    |
+|-------------------------| --- | --- | --- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| /api/v1/recommendations | POST | Get the recommendations for the given text and optional parameters | `{"text": "string", "categories": ["cond-mat.dis-nn"], "years": ["2007", "2010"], "number_of_results": 5}` | `{"papers": [{"id": "123", "title": "title", "authors": "authors", "abstract": "abstract", "categories": "categories", "journal_ref": "journal_ref", "similarity_score": 0.5}]}` |
 
 ## ArXiv Copilot
 
