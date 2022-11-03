@@ -89,13 +89,15 @@ chrome.storage.local.get({
 });
 
 class RecommandationService {
-    constructor(text_buffer, text_trigger_depth, recommendation_service_url, recommendation_service_token) {
+    constructor(text_buffer, text_trigger_depth, recommendation_service_url, recommendation_service_token, years, categories) {
         this.text_buffer = text_buffer;
         this.nwords = 0;
         this.last_input = " ";
         this.text_trigger_depth = text_trigger_depth;
         this.recommendation_service_url = recommendation_service_url;
         this.recommendation_service_token = recommendation_service_token;
+        this.years = years;
+        this.categories = categories;
     }
 
     message_handler(request, sender, sendResponse) {
@@ -119,7 +121,9 @@ class RecommandationService {
         this.nwords = 0;
         let url = encodeURI(this.recommendation_service_url);
         let body = JSON.stringify({
-            "text": buffer.to_string()
+            "text": buffer.to_string(),
+            "years": this.years,
+            "categories": this.categories,
         })
         let headers = {
             'Accept': 'application/json',
@@ -165,17 +169,21 @@ class RecommandationService {
     }
 }
 
-let recommandation_service = new RecommandationService(buffer, 10, "3000", undefined);
+let recommandation_service = new RecommandationService(buffer, 10, "3000", undefined, [], []);
 
 chrome.storage.local.get({
     text_trigger_depth: "10",
     recommendation_service_url: "https://recommendationservice.community.saturnenterprise.io/api/v1/recommendations/",
     recommendation_service_token: "token",
+    years: "",
+    categories: "",
 }, (result) => {
     console.log(result);
     recommandation_service.text_trigger_depth = result.text_trigger_depth;
     recommandation_service.recommendation_service_url = result.recommendation_service_url;
     recommandation_service.recommendation_service_token = result.recommendation_service_token;
+    recommandation_service.years = result.years.replace(/[\s,]+/, " ").split(" ").filter(n => n);
+    recommandation_service.categories = result.categories.replace(/[\s,]+/, " ").split(" ").filter(n => n);
 });
 
 chrome.runtime.onMessage.addListener(recommandation_service.message_handler.bind(recommandation_service));
@@ -202,6 +210,12 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
                 break;
             case "recommendation_service_token":
                 recommandation_service.recommendation_service_token = changes[key].newValue;
+                break;
+            case "years":
+                recommandation_service.years = changes[key].newValue === undefined ? [] : changes[key].newValue.replace(/[\s,]+/, " ").split(" ").filter(n => n);
+                break;
+            case "categories":
+                recommandation_service.categories = changes[key].newValue === undefined ? [] : changes[key].newValue.replace(/[\s,]+/, " ").split(" ").filter(n => n);
                 break;
             default:
                 break;
