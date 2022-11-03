@@ -30,7 +30,7 @@ def read_file(file_path: str) -> list[str]:
 
 
 def paper_batch_generator(lines: list[str]) -> dict:
-    for i in range(0, len(lines)[:20000], LOAD_BATCH_SIZE):
+    for i in range(0, len(lines), LOAD_BATCH_SIZE):
         batch_of_papers = lines[i:i+LOAD_BATCH_SIZE]
         yield map(process_paper, batch_of_papers)
 
