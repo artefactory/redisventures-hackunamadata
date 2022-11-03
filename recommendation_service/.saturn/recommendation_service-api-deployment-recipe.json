@@ -20,7 +20,7 @@
       "path": "/home/jovyan/workspace/redisventures-hackunamadata",
       "public": false,
       "on_restart": "reclone",
-      "reference": "feat/vector_service",
+      "reference": "main",
       "reference_type": "branch"
     }
   ],
@@ -44,7 +44,7 @@
     "instance_type": "medium",
     "command": "uvicorn main:app --reload --host 0.0.0.0 --port 8000",
     "instance_count": 1,
-    "public": false,
+    "public": true,
     "start_ssh": false,
     "subdomain": "recommendationservice"
   },
