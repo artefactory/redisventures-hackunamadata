@@ -20,7 +20,7 @@ async def load_papers(papers_list: PapersList):
     logger.info("Loading all papers in redis")
     pipe = await redis_client.pipeline()
 
-    async def load_paper(paper: Paper):
+    for paper in papers_list:
         await pipe.hset(
             f"{ARXIV_PAPERS_PREFIX_KEY}/{paper.id}",
             mapping=dict(paper)
@@ -31,7 +31,6 @@ async def load_papers(papers_list: PapersList):
         )
 
     try:
-        await asyncio.gather(*[load_paper(paper) for paper in papers_list.papers])
         await pipe.execute()
         return JSONResponse(status_code=status.HTTP_201_CREATED, content={"status": "ok"})
     except Exception as e:
