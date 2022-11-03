@@ -18,18 +18,21 @@ embeddings = Embeddings()
 @router.post("/arxiv/papers")
 async def load_papers(papers_list: PapersList):
     logger.info("Loading all papers in redis")
+    pipe = await redis_client.pipeline()
 
     async def load_paper(paper: Paper):
-        await redis_client.hset(
+        await pipe.hset(
             f"{ARXIV_PAPERS_PREFIX_KEY}/{paper.id}",
             mapping=dict(paper)
         )
-        await redis_client.lpush(
+        await pipe.lpush(
             QUEUE_NAME,
             paper.id
         )
+
     try:
         await asyncio.gather(*[load_paper(paper) for paper in papers_list.papers])
+        await pipe.execute()
         return JSONResponse(status_code=status.HTTP_201_CREATED, content={"status": "ok"})
     except Exception as e:
         logger.error(e)
