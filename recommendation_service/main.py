@@ -53,8 +53,7 @@ def get_recommendations(similarity_request: UserTextSimilarityRequest):
         )
         result = response.json()
         if response.status_code == status.HTTP_200_OK:
-            return Papers(**result["papers"])
-
+            return Papers(papers=result["papers"])
         logger.error({"result": result, "status_code": response.status_code})
         return {
             "details": "An error occurred when requesting vector service",
