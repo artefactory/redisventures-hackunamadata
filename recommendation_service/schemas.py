@@ -18,15 +18,10 @@ class Paper(BaseModel):
     journal_ref: str
     similarity_score: float
 
-    class Config:
-        fields = {'similarity_score': {'exclude': True}}
-
 
 class Papers(BaseModel):
     papers: list[Paper]
 
-    @validator("papers", each_item=True, pre=True)
-    def remove_paper_with_low_similarity(self, value):
-        if value["similarity_score"] < SIMILARITY_SCORE_LIMIT:
-            return None
-        return value
+    @validator("papers", pre=True)
+    def remove_paper_with_low_similarity(values):
+        return [paper for paper in values if paper["similarity_score"] > SIMILARITY_SCORE_LIMIT]

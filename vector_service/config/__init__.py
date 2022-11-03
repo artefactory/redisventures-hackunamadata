@@ -9,6 +9,7 @@ API_V1_STR = "/api/v1"
 
 N_WORKERS = 2
 
+
 def configure_logger():
     format_logger = (
         "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
