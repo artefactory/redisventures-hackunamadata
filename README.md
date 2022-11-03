@@ -87,3 +87,4 @@ sequenceDiagram
 | recommendation_service_token | Token for the recommendation service | `678GSA576SQ` | `undefined` |
 | years | Years to filter the recommendations | `2007, 2010` | `""` |
 | categories | Categories to filter the recommendations | `cond-mat.dis-nn, cs.AI` | `""` |
+| text_collection_mode | Mode to collect text from the page (`keyboard` | `textContent`)| `keyboard` | `keyboard` |

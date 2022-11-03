@@ -24,6 +24,12 @@ ArXiv Copilot is a chrome extensions for google docs that recommends papers from
 3. See the recommendations pop up as you write.
 4. Click on the recommendations to open the paper in a new tab.
 
+### Advanced Usage - Text collection method
+
+Currently you are given the choice between two text collection methods:
+1. `keyboards`: This method collects text from the keyboard events. This is the default method. It is not the most accurate method but it is the most performant.
+2. `textContent`: This method collects text from the `textContent` property of the google doc. This method is more accurate but it is also more performant. However, it requires the user to refresh the page after each change so that the extension can collect the new text.
+
 ## Developper Guide
 
 ### Chome extension lifecycle
