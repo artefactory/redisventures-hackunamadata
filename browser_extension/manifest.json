@@ -12,16 +12,23 @@
     },
     
     "options_page": "options.html",
-    "content_scripts": [{
-      "css": ["hook.css"],
-      "js": ["hook.js"],
-      "matches": ["https://docs.google.com/document/*"],
-      "all_frames": true,
-      "match_about_blank": true
-    }],
+    "content_scripts": [
+      {
+        "js": ["keyevents.js"],
+        "matches": ["https://docs.google.com/document/*"],
+        "all_frames": true,
+        "match_about_blank": true
+      },
+      {
+        "js": ["textcontent.js"],
+        "matches": ["https://docs.google.com/document/*"],
+        "match_about_blank": true
+      }
+    ],
     "permissions": [
       "storage",
-      "notifications"
+      "notifications",
+      "tabs"
     ],
     "background": {
       "service_worker": "background.js"

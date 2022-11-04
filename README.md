@@ -30,7 +30,7 @@ sequenceDiagram
         opt ArXiv Copilot has registered `text_trigger_depth` words
             ArXiv Copilot ->> Recommendation Service: Send `text_send_depth` words.
             activate Recommendation Service
-            Note over ArXiv Copilot, Recommendation Service: GET /api/v1/text/:text/nearest?k=10
+            Note over ArXiv Copilot, Recommendation Service: POST /api/v1/recommendations/
             Recommendation Service ->> Vector Service: Send text
             Vector Service ->> Vector Service : Compute vector for given text input
             Vector Service ->> Redis : Find nearest papers in index
@@ -85,3 +85,6 @@ sequenceDiagram
 | text_send_depth | Number of words to send to the recommendation service | `3000` | `3000` |
 | recommendation_service_url | URL of the recommendation service | `https://recommendationservice.community.saturnenterprise.io/api/v1/recommendations/` | `https://recommendationservice.community.saturnenterprise.io/api/v1/recommendations/` |
 | recommendation_service_token | Token for the recommendation service | `678GSA576SQ` | `undefined` |
+| years | Years to filter the recommendations | `2007, 2010` | `""` |
+| categories | Categories to filter the recommendations | `cond-mat.dis-nn, cs.AI` | `""` |
+| text_collection_mode | Mode to collect text from the page (`keyboard`, `textContent`)| `keyboard` | `keyboard` |
