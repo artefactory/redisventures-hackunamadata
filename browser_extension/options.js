@@ -1,10 +1,9 @@
 // whenever a value is updated, update chrome.storage.local
-var inputs = document.getElementsByTagName("input");
+var options = Array.from(document.getElementsByTagName("input")).concat(Array.from(document.getElementsByTagName("select")));
 
-console.log("inputs: ", inputs);
 
-for (var i = 0; i < inputs.length; i++) {
-    inputs[i].addEventListener("change", function (obj) {
+for (var i = 0; i < options.length; i++) {
+    options[i].addEventListener("change", function (obj) {
         var key = obj.target.id;
         var value = obj.target.value;
         var obj = {};
@@ -15,9 +14,9 @@ for (var i = 0; i < inputs.length; i++) {
 }
 
 // set the value of the input to the value stored in chrome.storage.local or the default value
-for (let i = 0; i < inputs.length; i++) {
-    let key = inputs[i].id;
-    let value = inputs[i].value;
+for (let i = 0; i < options.length; i++) {
+    let key = options[i].id;
+    let value = options[i].value;
     let lookup = {};
     lookup[key] = value;
     chrome.storage.local.get(lookup, (result) => {
