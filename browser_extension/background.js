@@ -89,16 +89,24 @@ chrome.storage.local.get({
 });
 
 class RecommandationService {
-    constructor(text_buffer, text_trigger_depth, recommendation_service_url, recommendation_service_token) {
+    constructor(text_buffer, text_trigger_depth, recommendation_service_url, recommendation_service_token, years, categories, text_collection_mode) {
         this.text_buffer = text_buffer;
+        this.text = "";
         this.nwords = 0;
         this.last_input = " ";
         this.text_trigger_depth = text_trigger_depth;
         this.recommendation_service_url = recommendation_service_url;
         this.recommendation_service_token = recommendation_service_token;
+        this.years = years;
+        this.categories = categories;
+        this.text_collection_mode = text_collection_mode;
     }
 
     message_handler(request, sender, sendResponse) {
+        if (sender.id !== chrome.runtime.id) {
+            return;
+        }
+
         if (request.key === undefined) {
             return;
         }
@@ -118,8 +126,28 @@ class RecommandationService {
         }
         this.nwords = 0;
         let url = encodeURI(this.recommendation_service_url);
+        switch (this.text_collection_mode) {
+            case "textContent":
+                console.log("textContent");
+                // send message to content script and get response
+                chrome.tabs.query({active: true, currentWindow: true}, ([tab]) => {
+                    chrome.tabs.sendMessage(tab.id, {key: "textContent"}, (response) => {
+                        this.text = response.text;
+                    });
+                });
+
+                break;
+            case "keyboard":
+                console.log("keyboard");
+                this.text = buffer.to_string();
+                break;
+        }
+        console.log(this.text);
+
         let body = JSON.stringify({
-            "text": buffer.to_string()
+            "text": this.text,
+            "years": this.years,
+            "categories": this.categories,
         })
         let headers = {
             'Accept': 'application/json',
@@ -165,17 +193,23 @@ class RecommandationService {
     }
 }
 
-let recommandation_service = new RecommandationService(buffer, 10, "3000", undefined);
+let recommandation_service = new RecommandationService(buffer, undefined, undefined, undefined, undefined, undefined, undefined);
 
 chrome.storage.local.get({
     text_trigger_depth: "10",
     recommendation_service_url: "https://recommendationservice.community.saturnenterprise.io/api/v1/recommendations/",
-    recommendation_service_token: "token",
+    recommendation_service_token: "",
+    years: "",
+    categories: "",
+    text_collection_mode: "keyboard",
 }, (result) => {
     console.log(result);
     recommandation_service.text_trigger_depth = result.text_trigger_depth;
     recommandation_service.recommendation_service_url = result.recommendation_service_url;
     recommandation_service.recommendation_service_token = result.recommendation_service_token;
+    recommandation_service.years = result.years.replace(/[\s,]+/, " ").split(" ").filter(n => n);
+    recommandation_service.categories = result.categories.replace(/[\s,]+/, " ").split(" ").filter(n => n);
+    recommandation_service.text_collection_mode = result.text_collection_mode;
 });
 
 chrome.runtime.onMessage.addListener(recommandation_service.message_handler.bind(recommandation_service));
@@ -202,6 +236,15 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
                 break;
             case "recommendation_service_token":
                 recommandation_service.recommendation_service_token = changes[key].newValue;
+                break;
+            case "years":
+                recommandation_service.years = changes[key].newValue === undefined ? [] : changes[key].newValue.replace(/[\s,]+/, " ").split(" ").filter(n => n);
+                break;
+            case "categories":
+                recommandation_service.categories = changes[key].newValue === undefined ? [] : changes[key].newValue.replace(/[\s,]+/, " ").split(" ").filter(n => n);
+                break;
+            case "text_collection_mode":
+                recommandation_service.text_collection_mode = changes[key].newValue;
                 break;
             default:
                 break;

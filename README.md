@@ -57,7 +57,7 @@ sequenceDiagram
         opt ArXiv Copilot has registered `text_trigger_depth` words
             ArXiv Copilot ->> Recommendation Service: Send `text_send_depth` words.
             activate Recommendation Service
-            Note over ArXiv Copilot, Recommendation Service: GET /api/v1/text/:text/nearest?k=10
+            Note over ArXiv Copilot, Recommendation Service: POST /api/v1/recommendations/
             Recommendation Service ->> Vector Service: Send text
             Vector Service ->> Vector Service : Compute vector for given text input
             Vector Service ->> Redis : Find nearest papers in index
@@ -99,9 +99,9 @@ For more details, see [here](./vector_service).
 
 ## Recommendation Service
 ### Endpoints
-| Endpoint | Method | Description | Request Body | Response Body |
-| --- | --- | --- | --- | --- |
-| /recommandation_service/v1/recommendations | POST | Get the recommendations for the given text and optional parameters | `{"text": "string", "categories": ["cond-mat.dis-nn"], "years": ["2007", "2010"], "number_of_results": 5}` | `{"papers": [{"id": "123", "title": "title", "abstract": "abstract"}]}` |
+| Endpoint                | Method | Description | Request Body | Response Body                                                                                                                                                                    |
+|-------------------------| --- | --- | --- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| /api/v1/recommendations | POST | Get the recommendations for the given text and optional parameters | `{"text": "string", "categories": ["cond-mat.dis-nn"], "years": ["2007", "2010"], "number_of_results": 5}` | `{"papers": [{"id": "123", "title": "title", "authors": "authors", "abstract": "abstract", "categories": "categories", "journal_ref": "journal_ref", "similarity_score": 0.5}]}` |
 
 For more details, see [here](./recommendation_service).
 
@@ -114,6 +114,9 @@ For more details, see [here](./recommendation_service).
 | text_send_depth | Number of words to send to the recommendation service | `3000` | `3000` |
 | recommendation_service_url | URL of the recommendation service | `https://recommendationservice.community.saturnenterprise.io/api/v1/recommendations/` | `https://recommendationservice.community.saturnenterprise.io/api/v1/recommendations/` |
 | recommendation_service_token | Token for the recommendation service | `678GSA576SQ` | `undefined` |
+| years | Years to filter the recommendations | `2007, 2010` | `""` |
+| categories | Categories to filter the recommendations | `cond-mat.dis-nn, cs.AI` | `""` |
+| text_collection_mode | Mode to collect text from the page (`keyboard`, `textContent`)| `keyboard` | `keyboard` |
 
 For more details, see [here](./browser_extension).
 
