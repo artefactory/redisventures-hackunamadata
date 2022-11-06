@@ -22,7 +22,7 @@
 ArXiv Copilot is a Chrome extension that is giving you live suggestions of scientific papers that could interest you when you're writing an article, course notes, ...
 </br>It is a system created using the Vector Search technology on the [arXiv scholarly papers dataset](https://arxiv.org/).
 This was developed during the [Vector Search Engineering Lab (Hackathon)](https://hackathon.redisventures.com/), in collaboration with Saturn Cloud and Redis, by three data engineers and one data scientist from Artefact Paris.
-</br>If you want to understand more how the tool was thought and made, you can read our article [here](https://drive.google.com/file/d/1klVaP_Km_gUvhhT5RBO7g8p_TW9XH8k4/view).
+</br>If you want to understand more how the tool was thought and made, you can read our article [here](https://drive.google.com/file/d/1klVaP_Km_gUvhhT5RBO7g8p_TW9XH8k4/view) and see our pitch deck (with a demo) [here](https://drive.google.com/file/d/1v4Tdtj7JWdkKiXzjG7QPzIXn6Lkc4bNO/view).
 
 ## How to install ArXiv Copilot
 
