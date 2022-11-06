@@ -1,7 +1,34 @@
-# redisventures-hackunamadata
-https:/hackathon.redisventures.com/
+<div align="center">
+<img src="https://dwglogo.com/wp-content/uploads/2017/12/1100px_Redis_Logo_01.png" height="200" align="middle"/>
+</div>
 
+# ArXiv Copilot </br> Redisventures - Hackunamadata team
 
+## :bookmark_tabs: Menu
+
+* [Overview](#overview)
+* [How to install ArXiv Copilot](#how-to-install-arxiv-copilot)
+* [Sequence Diagram](#sequence-diagram)
+* [Developer Guide](#developer-guide)
+  * [Redis - Data structure](#redis---data-structure)
+  * [Vector Service](#vector-service)
+  * [Recommendation Service](#recommendation-service)
+  * [ArXiv Copilot](#arxiv-copilot)
+* [License](#license)
+* [Authors](#authors)
+
+## Overview
+
+ArXiv Copilot is a Chrome extension that is giving you live suggestions of scientific papers that could interest you when you're writing an article, course notes, ...
+</br>It is a system created using the Vector Search technology on the [arXiv scholarly papers dataset](https://arxiv.org/).
+This was developed during the [Vector Search Engineering Lab (Hackathon)](https:/hackathon.redisventures.com/), in collaboration with Saturn Cloud and Redis, by three data engineers and one data scientist from Artefact Paris.
+</br>If you want to understand more how the tool was thought and made, you can read our article [here](https://docs.google.com/document/d/14p3btpmbXqG21guGo1Bf6Wf9mrt3gc6wc-CJ0aMpUWQ/edit?usp=sharing).
+
+## How to install ArXiv Copilot
+
+See [here](./browser_extension/README.md) to know how to install the browser extension and enjoy the use of ArXiv Copilot.
+
+## Sequence Diagram
 ```mermaid
 sequenceDiagram
     title "High level flow - synchronous"
@@ -46,9 +73,8 @@ sequenceDiagram
     end
 ```
 
-# Components specification
-## Redis
-### Data structure
+# Developer Guide
+## Redis - Data structure
 ```json
 {
     "id": "1801.00001",
@@ -69,12 +95,15 @@ sequenceDiagram
 | /vector_service/v1/arxiv/papers/{id} | GET | Get the metadata stored in Redis ahsh for the given arxiv paper id | - | `{"id": "123", "title": "title", "abstract": "abstract", ...}` |
 | /vector_service/v1/text/nearest| POST | Get the nearest papers for the given text | `{"text": "string", "categories": ["cond-mat.dis-nn"], "years": ["2007", "2010"], "number_of_results": 5,"search_type": "KNN"}` | `{"papers": [{"id": "123", "title": "title", "abstract": "abstract"}, ...]}` |
 
+For more details, see [here](./vector_service).
 
 ## Recommendation Service
 ### Endpoints
 | Endpoint                | Method | Description | Request Body | Response Body                                                                                                                                                                    |
 |-------------------------| --- | --- | --- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | /api/v1/recommendations | POST | Get the recommendations for the given text and optional parameters | `{"text": "string", "categories": ["cond-mat.dis-nn"], "years": ["2007", "2010"], "number_of_results": 5}` | `{"papers": [{"id": "123", "title": "title", "authors": "authors", "abstract": "abstract", "categories": "categories", "journal_ref": "journal_ref", "similarity_score": 0.5}]}` |
+
+For more details, see [here](./recommendation_service).
 
 ## ArXiv Copilot
 
@@ -88,3 +117,15 @@ sequenceDiagram
 | years | Years to filter the recommendations | `2007, 2010` | `""` |
 | categories | Categories to filter the recommendations | `cond-mat.dis-nn, cs.AI` | `""` |
 | text_collection_mode | Mode to collect text from the page (`keyboard`, `textContent`)| `keyboard` | `keyboard` |
+
+For more details, see [here](./browser_extension).
+
+## License
+
+The [MIT License]() (MIT)
+
+## Authors
+- [@dauresh](https://github.com/dauresh)
+- [@ali-artefact](https://github.com/ali-artefact)
+- [@benoitbazouin](https://github.com/benoitbazouin)
+- [@pol-defont-reaulx](https://github.com/pol-defont-reaulx)
