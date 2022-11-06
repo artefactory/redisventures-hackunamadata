@@ -8,7 +8,11 @@ ArXiv Copilot is a chrome extensions for google docs that recommends papers from
 
 1. Download the latest version of the extension from [here](https://github.com/artefactory/redisventures-hackunamadata).
 2. Go to `chrome://extensions/` in your browser.
-3. Click on `Load unpacked` and select the folder `redisventures-hackunamadata/browser_extension` where you downloaded the repository.
+3. Enable developer mode.
+4. Click on `Load unpacked` and select the folder `redisventures-hackunamadata/browser_extension` where you downloaded the repository.
+5. Enable chrome notifications in your computer settings.
+   - Macos : Preferences -> Notifications -> Google Chrome -> enable notifications.
+   - Windows : Settings -> System -> Notifications & actions -> Google Chrome -> enable notifications.
 
 ### Configuration
 
