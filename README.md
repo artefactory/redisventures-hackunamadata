@@ -122,7 +122,7 @@ For more details, see [here](./browser_extension).
 
 ## License
 
-The [MIT License]() (MIT)
+The [MIT License](./LICENSE.md) (MIT)
 
 ## Authors
 - [@dauresh](https://github.com/dauresh)
