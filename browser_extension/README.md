@@ -28,6 +28,8 @@ ArXiv Copilot is a chrome extensions for google docs that recommends papers from
 3. See the recommendations pop up as you write.
 4. Click on the recommendations to open the paper in a new tab.
 
+:bangbang: the use of AdBlock or uBlock might block the extension's requests. You should desactivate your ad blocker to use the extension.
+
 ### Advanced Usage - Text collection method
 
 Currently you are given the choice between two text collection methods:
